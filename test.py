@@ -2,7 +2,6 @@ import os
 import subprocess
 import shutil
 from typing import List
-from typing_extensions import Self
 import textwrap
 
 build_folder = os.path.join(os.path.dirname(__file__), "build")
@@ -10,7 +9,7 @@ conan_cache_folder = os.path.join(build_folder, "conan2")
 
 
 class Requirement:
-    def __init__(self, package: "Package", version: str, transitive_headers: bool | None, transitive_libs: bool | None,):
+    def __init__(self, package: "Package", version: str, transitive_headers, transitive_libs,):
         self.package = package
         self.version = version
         self.name = package.name
@@ -36,7 +35,7 @@ class Package:
         self.requirements: List[Requirement] = []
         self.test_requirements: List[TestRequirement] = []
 
-    def requires(self, dep: Self, version: str, transitive_headers=None, transitive_libs=None) -> Self:
+    def requires(self, dep: 'Package', version: str, transitive_headers=None, transitive_libs=None) -> 'Package':
         self.requirements.append(
             Requirement(
                 package=dep,
@@ -47,7 +46,7 @@ class Package:
         )
         return self
 
-    def test_requires(self, dep: Self, version: str) -> Self:
+    def test_requires(self, dep: 'Package', version: str) -> 'Package':
         self.test_requirements.append(TestRequirement(dep, version))
         return self
 
